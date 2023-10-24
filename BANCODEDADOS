@@ -1,0 +1,155 @@
+import customtkinter as ctk
+
+# Lógica do banco de dados para fazer login e registro
+class BackEnd():
+    pass
+
+# Classe principal da aplicação, herda de ctk.CTk e BackEnd
+class App(ctk.CTk, BackEnd):
+    def __init__(self):
+        super().__init__()
+        ctk.set_appearance_mode("dark")  # Configura o modo de aparência para "dark"
+        self.configuracao_da_interface()  # Configura a interface
+        self.tela_de_login()  # Cria a tela de login
+
+    # Configuração inicial da interface da aplicação
+    def configuracao_da_interface(self):
+        self.title("PsychoBot")  # Define o título da janela
+        self.geometry('600x435')  # Define o tamanho inicial da janela
+        self.minsize(width=400, height=435)  # Define o tamanho mínimo da janela
+        self.resizable(True, True)  # Permite redimensionar a janela em ambas as direções
+
+    # Cria a tela de login na interface
+    def tela_de_login(self):
+        self.frame_login = ctk.CTkFrame(self)  # Cria um frame para o login
+        self.frame_login.pack(expand=True)
+
+        # Adiciona um título "Login"
+        self.lb_title = ctk.CTkLabel(self.frame_login, text="Login", font=("Georgia", 22))
+        self.lb_title.grid(row=0, column=0, padx=10, pady=10)
+
+        # Cria campo de entrada para o nome de usuário ou email
+        self.user_login_entry = ctk.CTkEntry(self.frame_login, width=300, placeholder_text='Nome ou email', font=("Georgia", 16), corner_radius=15)
+        self.user_login_entry.grid(row=1, column=0, padx=10, pady=10)
+
+        # Cria campo de entrada para a senha (com opção de ocultar os caracteres)
+        self.password_login_entry = ctk.CTkEntry(self.frame_login, width=300, placeholder_text='Senha', font=("Georgia", 16), corner_radius=15, show='*')
+        self.password_login_entry.grid(row=2, column=0, padx=10, pady=10)
+
+        # Cria uma caixa de seleção para mostrar/ocultar a senha
+        self.check_password = ctk.CTkCheckBox(self.frame_login, text='Exibir senha', font=("Georgia", 16), corner_radius=15)
+        self.check_password.grid(row=3, column=0, padx=10, pady=10)
+        self.check_password.bind("<Button-1>", self.toggle_password_log)  # Liga o evento de clique à função toggle_password
+
+        # Cria botão "Fazer Login" e botão "Registrar" com funções associadas
+        self.btn_login = ctk.CTkButton(self.frame_login, text='Fazer Login', command=self.clean_login, font=("Georgia", 16), corner_radius=15)
+        self.btn_login.grid(row=4, column=0, padx=10, pady=10)
+
+        self.btn_register = ctk.CTkButton(self.frame_login, text='Registrar', command=self.register, font=("Georgia", 16), corner_radius=15, fg_color='#444')
+        self.btn_register.grid(row=5, column=0, padx=10, pady=10)
+
+
+    def register(self):
+        self.frame_login.pack_forget()
+
+        self.frame_register = ctk.CTkFrame(self)
+        self.frame_register.pack(expand=True)
+
+        # Adiciona um título "Sign up"
+        self.lb_title = ctk.CTkLabel(self.frame_register, text="Sign up", font=("Georgia", 22))
+        self.lb_title.grid(row=0, column=0, padx=10, pady=10)
+
+        # Cria campos de entrada para nome, email, senha e confirmação de senha
+        self.username_register_entry = ctk.CTkEntry(self.frame_register, width=300, placeholder_text='Nome', font=("Georgia", 16), corner_radius=15)
+        self.username_register_entry.grid(row=1, column=0, padx=10, pady=10)
+
+        self.email_register_entry = ctk.CTkEntry(self.frame_register, width=300, placeholder_text='Email', font=("Georgia", 16), corner_radius=15)
+        self.email_register_entry.grid(row=2, column=0, padx=10, pady=10)
+
+        self.password_register_entry = ctk.CTkEntry(self.frame_register, width=300, placeholder_text='Senha', font=("Georgia", 16), corner_radius=15, show='*')
+        self.password_register_entry.grid(row=3, column=0, padx=10, pady=10)
+
+        self.password_register_confirm = ctk.CTkEntry(self.frame_register, width=300, placeholder_text='Confirmar senha', font=("Georgia", 16), corner_radius=15, show='*')
+        self.password_register_confirm.grid(row=4, column=0, padx=10, pady=10)
+
+        # Cria uma caixa de seleção para mostrar/ocultar a senha
+        self.check_password = ctk.CTkCheckBox(self.frame_register, text='Exibir senha', font=("Georgia", 16), corner_radius=15)
+        self.check_password.grid(row=5, column=0, padx=10, pady=10)
+        self.check_password.bind("<Button-1>", self.toggle_password_reg)  # Liga o evento de clique à função toggle_password
+
+        self.btn_register = ctk.CTkButton(self.frame_register, text='Registrar', command=self.clean_register, font=("Georgia", 16), corner_radius=15)
+        self.btn_register.grid(row=6, column=0, padx=10, pady=10)
+
+        self.btn_back = ctk.CTkButton(self.frame_register, text='Voltar para login', command=self.back, font=("Georgia", 16), corner_radius=15, fg_color='#444')
+        self.btn_back.grid(row=7, column=0, padx=10, pady=10)
+
+
+    # Método chamado ao clicar na caixa de seleção "Exibir senha"
+    def toggle_password_log(self, event):
+        show_password = self.password_login_entry.cget("show")
+
+        if show_password == "":
+            # Se a senha estiver sendo exibida, oculte-a
+            self.password_login_entry.configure(show="*")
+        else:
+            # Caso contrário, mostre a senha
+            self.password_login_entry.configure(show="")
+            
+    def toggle_password_reg(self, event):
+        show_password = self.password_register_entry.cget("show")
+
+        if show_password == "":
+            # Se a senha estiver sendo exibida, oculte-a
+            self.password_register_entry.configure(show="*")
+            self.password_register_confirm.configure(show="*")
+        else:
+            # Caso contrário, mostre a senha
+            self.password_register_entry.configure(show="")
+            self.password_register_confirm.configure(show="")
+
+    def back(self):
+        self.frame_register.pack_forget()
+        self.tela_de_login()
+
+    def clean_register(self):
+        self.username_register_entry.delete(0, ctk.END)
+        self.email_register_entry.delete(0, ctk.END)
+        self.password_register_entry.delete(0, ctk.END)
+        self.password_register_confirm.delete(0, ctk.END)
+
+    def clean_login(self):
+        self.user_login_entry.delete(0, ctk.END)
+        self.password_login_entry.delete(0, ctk.END)
+
+app = App()
+
+if __name__ == '__main__':
+    app.mainloop()
+
+class PsychoBotApp(ctk.CTk):
+    def __init__(self, root):
+        super().__init__()
+        self.root = root
+        self.root.title("PsychoBot")
+        ctk.set_appearance_mode("dark")
+        self.root.geometry('600x435')
+        self.root.resizable(True, True)
+        self.root.minsize(width=400, height=435)
+
+        self.chat_display = ctk.CTkTextbox(self.root, wrap=ctk.WORD, state=ctk.NORMAL)
+        self.chat_display.pack(fill=ctk.BOTH, expand=True)
+
+        self.user_input_entry = ctk.CTkEntry(self.root)
+        self.user_input_entry.pack(fill=ctk.X, pady=1)
+
+        self.send_button = ctk.CTkButton(self.root, text="Send")
+        self.send_button.pack()
+
+    def run(self):
+        self.root.mainloop()
+
+root = ctk.CTk()
+tela = PsychoBotApp(root)
+
+if __name__ == "__main__":
+    tela.run()
